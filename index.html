@@ -30,46 +30,42 @@
     <!-- Todo: Create a modal with a form to add tasks -->
 
 
-<!-- JQuery modal form -->
-    <div id="dialog-form" title="Create new user">
-      <p class="validateTips">All form fields are required.</p>
-    
-      <form>
-        <fieldset>
-          <label for="name">Name</label>
-          <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
-    
-          <!-- Allow form submission with keyboard without duplicating the dialog button -->
-          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-        </fieldset>
-      </form>
+<!-- ----------------------Bootstrap modal form-------------------------- -->
+
+    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel">Add Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="task-title" class="col-form-label col-6">Task Title</label>
+                <input type="text" class="form-control" id="task-title">
+              </div>
+              <div class="form-group">
+                <!-- added "col-6" class to change the size to half the window size -->
+                <label for="task-duedate" class="col-form-label col-6">Task Due Date</label>
+                <textarea class="form-control" id="task-duedate"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="task-description" class="col-form-label">Task Description</label>
+                <textarea class="form-control" id="task-description"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-success">Add Task</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- JQuery list of existing users, similar to the widgets
-     that need to be displayed for the tasks? Kind of... -->
-    <div id="users-contain" class="ui-widget">
-      <h1>Existing Users:</h1>
-      <table id="users" class="ui-widget ui-widget-content">
-        <thead>
-          <tr class="ui-widget-header ">
-            <th>Name</th>
-            <th>Email</th>
-            <th>Password</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>john.doe@example.com</td>
-            <td>johndoe1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
 
 
      <!-- original code follows -->
