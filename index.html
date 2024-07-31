@@ -20,11 +20,37 @@
     <h1 class="display-3">Task Board</h1>
     <p class="lead">A simple Kanban board for task management</p>
   </header>
+  <!-- container class is container for entire board -->
   <div class="container">
+    <!-- text is centered, margin-bottom 5 -->
     <div class="text-center mb-5">
+      <!-- --------------"Add Task" button should open a modal with a form -->
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
     </div>
     <!-- Todo: Create a modal with a form to add tasks -->
+
+
+<!-- JQuery modal form -->
+    <div id="dialog-form" title="Create new user">
+      <p class="validateTips">All form fields are required.</p>
+    
+      <form>
+        <fieldset>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
+    
+          <!-- Allow form submission with keyboard without duplicating the dialog button -->
+          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+      </form>
+    </div>
+
+
+     <!-- original code follows -->
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
         <div id="to-do" class="card border-light mb-3 lane flex-grow-1">
