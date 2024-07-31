@@ -20,9 +20,10 @@ function renderTaskList() {
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
-  event.preventDefault();
-  $("#formModal").modal('show');
+  // event.preventDefault();
+  // $("#formModal").modal('show');
 
+  // JQuery script to amend
   $(function () {
     var dialog,
       form,
