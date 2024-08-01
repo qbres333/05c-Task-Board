@@ -6,6 +6,7 @@ let nextId = JSON.parse(localStorage.getItem("nextId"));
 const titleEl = $('#task-title');
 const dueDateEl = $('#task-duedate');
 const descriptionEl = $('#task-description');
+const taskFormEl = $('#task-form');
 
 // add "tasks" array to store task objects
 let tasks = [];
@@ -32,14 +33,13 @@ function createTaskCard(task) {
   cardDeleteBtn.attr("data-task-id", task.id);
   cardDeleteBtn.on("click", handleDeleteTask);
 
-  /* Only apply styles if status 
-  is not 'done' */
+  /* Only apply styles if status is not 'done' */
   if (task.status !== 'done') {
     const now = dayjs();
     const formattedDate = now.format('MM/DD/YYYY');
     const taskDueDate = dayjs(task.dueDateEl, "MM/DD/YYYY");
 
-    /** If the task is due today, make the card yellow. If it's past due, make it red. */
+    /* If the task is due today, make the card yellow. If it's past due, make it red. */
     if (formattedDate.isSame(taskDueDate)) {
       taskCard.addClass('bg-warning text-white');
     } else if (formattedDate.isAfer(taskDueDate)) {
@@ -49,7 +49,7 @@ function createTaskCard(task) {
 
   }
 
-  // append fields to card and card body
+  /* append fields to card and card body */
   taskCard.append(cardHeader, cardBody);
   cardBody.append(cardDueDate, cardDescription, cardDeleteBtn);
 
@@ -57,8 +57,7 @@ function createTaskCard(task) {
 
 }
 
-/* Todo: create a function to render the task list and 
- make cards draggable */
+/* Todo: create a function to render the task list and make cards draggable */
 // create separate function to read local storage first
 function readCardsFromStorage() {
     // retrieve data from local storage
@@ -154,20 +153,69 @@ function saveTasksToStorage(tasks) {
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
+  // set const to taskCard attribute
+  const taskID = $(this).attr('data-task-id');
+  const tasks = readCardsFromStorage();
+
+  // remove the task from the array
+  tasks.forEach(task => {
+    if(task.id === taskID) {
+      // delete one task starting at the task index
+      tasks.splice(tasks.indexOf(task), 1);
+    }
+  });
+
+  // save new list of tasks to storage and render to the screen
+  saveTasksToStorage(tasks);
+  renderTaskList();
 
 }
 
 /* Todo: create a function to handle dropping a task into a 
  new status lane */
 function handleDrop(event, ui) {
+  // retrieve tasks from local storage and generate ID
+  const tasks = readCardsFromStorage();
+  const taskID = generateTaskId();
+  // get the id of lane the card was dropped into
+  const newStatus = event.target.id;
+  // find the card ID and update the status
+  for(let task of tasks) {
+    if (task.id === taskID) {
+      task.status = newStatus;
+    }
+  }
+
+  // save the updated array to local storage
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  renderTaskList();
 
 }
+
+
 
 /* Todo: when the page loads, render the task list, add event
   listeners, make lanes droppable, and make the due date 
  field a date picker */
 $(document).ready(function () {
   renderTaskList();
+  
+  // event listener to add task to lane
+  taskFormEl.on("submit", handleAddTask);
 
+  //  use event delegation to delete tasks dynamically
+  taskDisplayEl.on("click", ".btn-delete-task", handleDeleteTask);
+
+  // ? Make lanes droppable
+  $(".lane").droppable({
+    accept: ".draggable",
+    drop: handleDrop,
+  });
+
+  // why can't this element be dueDateEl?
+  $("#task-duedate").datepicker({
+    changeMonth: true,
+    changeYear: true,
+  });
 });
 
