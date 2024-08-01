@@ -20,7 +20,7 @@ function generateTaskId() {
 function createTaskCard(task) {
   const taskCard = $('<div>');
   taskCard.addClass("card task-card draggable my-3");
-  taskCard.attr('data-task-id', task.taskID);
+  taskCard.attr('data-taskID', task.taskID);
   const cardHeader = $('<div>').addClass('card-header h4').text(task.title);
   const cardBody = $('<div>').addClass('card-body');
   const cardDueDate = $('<p>').addClass('card-text').text(task.dueDate);
@@ -28,7 +28,7 @@ function createTaskCard(task) {
   const cardDeleteBtn = $('<button>')
   cardDeleteBtn.addClass('btn btn-danger delete')
   cardDeleteBtn.text('Delete')
-  cardDeleteBtn.attr('data-task-id', task.taskID);
+  cardDeleteBtn.attr('data-taskID', task.taskID);
   cardDeleteBtn.on('click', handleDeleteTask);
 
   /* Only apply styles if status is not 'done' */
@@ -102,7 +102,7 @@ function renderTaskList() {
   }
 
   //make task cards draggable
-  $('.draggable').draggable({ snap: ".card-body" });
+  // $('.draggable').draggable({ snap: true });
     // opacity: 0.7,
     // zIndex: 100,
     
@@ -117,6 +117,21 @@ function renderTaskList() {
     //   });
     // },
   
+    $(".draggable").draggable({
+      opacity: 0.7,
+      zIndex: 100,
+      snap: ".cardList",
+      helper: function (e) {
+ 
+        const original = $(e.target).hasClass("ui-draggable")
+          ? $(e.target)
+          : $(e.target).closest(".ui-draggable");
+
+        return original.clone().css({
+          width: original.outerWidth(),
+        });
+      },
+    });
 
 }
 
@@ -166,7 +181,7 @@ function handleAddTask(event){
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
   // set const to taskCard attribute
-  const taskID = $(this).attr('data-task-id');
+  const taskID = $(this).attr('data-taskID');
   // parse local storage
   const tasks = readTasksFromStorage();
 
@@ -190,22 +205,23 @@ function handleDeleteTask(event){
 function handleDrop(event, ui) {
   // retrieve tasks from local storage
   const tasks = readTasksFromStorage();
-  // get the task ID from the ui
-  const taskID =  ui.draggable[0].dataset.taskID;
+
+  // get the taskID from the draggable element
+  const taskID = ui.draggable.dataset.taskID;
+
   // find the lane ID
-  const laneID = event.$('.lane').taskID; 
-  
+  const laneStatus = event.target.id;
+
   // update task statuses based on lanes
-  for(let task of tasks) {
-    if (task.taskID === taskID) {
-      task.status = laneID;
+  for (let task of tasks) {
+    if (task.id === taskID) {
+      task.status = laneStatus;
     }
   }
 
   // save the updated array to local storage
-  localStorage.setItem('tasks', JSON.stringify(tasks));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   renderTaskList();
-
 }
 
 
@@ -233,7 +249,7 @@ $(document).ready(function () {
   taskDisplayEl.on("click", ".delete", handleDeleteTask);
 
   // make lanes droppable
-  $(".lane").droppable({
+  $(".cardList").droppable({
     accept: ".draggable",
     drop: handleDrop,
   });
