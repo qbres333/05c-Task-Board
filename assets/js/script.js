@@ -13,7 +13,6 @@ const taskDisplayEl = $('#task-display')
 function generateTaskId() {
   const taskID = crypto.randomUUID();
   return taskID;
-
 }
 
 // Todo: create a function to create a task card
@@ -34,8 +33,7 @@ function createTaskCard(task) {
   /* Only apply styles if status is not 'done' */
   if (task.status !== 'done') {
     const now = dayjs();   
-    const taskDueDate = dayjs(task.dueDate);
-   
+    const taskDueDate = dayjs(task.dueDate);   
 
     /* If the task is due today, make the card yellow. If it's past due, make it red. */
     if (
@@ -48,7 +46,6 @@ function createTaskCard(task) {
       taskCard.addClass("bg-danger text-white");
       cardDeleteBtn.addClass("border-light");
     }
-
   }
 
   /* append elements to card and card body */
@@ -56,7 +53,6 @@ function createTaskCard(task) {
   taskCard.append(cardHeader, cardBody);
 
   return taskCard;
-
 }
 
 /* Todo: create a function to render the task list and make cards draggable */
@@ -113,14 +109,11 @@ function renderTaskList() {
       const original = $(event.target).hasClass("ui-draggable")
         ? $(event.target)
         : $(event.target).closest(".ui-draggable");
-
-      // return original.clone().css({
+ 
       return original.clone().css({
-        width: original.outerWidth(),
-        
+        width: original.outerWidth(),        
       });
-    },
-    
+    },    
   });
 
 }
@@ -136,8 +129,8 @@ function handleAddTask(event){
 
   // ensure that all fields are filled in
   if (!taskTitle || !taskDueDate || !taskDescription) {
-    console.log(`All fields must have data.`);
-    return;
+    alert(`All fields must have data.`);
+    return; //returns to main page and does not allow task to post
   }
 
   /* create new task object based on input values; set default status to 'to-do',
@@ -186,7 +179,6 @@ function handleDeleteTask(event){
   // save new list of tasks to storage and render to the screen
   saveTasksToStorage(tasks);
   renderTaskList();
-
 }
 
 /* Todo: create a function to handle dropping a task into a 
@@ -194,12 +186,9 @@ function handleDeleteTask(event){
 function handleDrop(event, ui) {
   // retrieve tasks from local storage
   const tasks = readTasksFromStorage();
-  // let task;
   
   // get the taskID from the draggable element
   let taskID = ui.draggable.data('taskid');
-  console.log(taskID); //returns undefined instead of task id
-  /* matches by class instead of unique key */
  
   // find the lane ID
   const laneStatus = event.target.id;
@@ -207,8 +196,7 @@ function handleDrop(event, ui) {
   // update task statuses based on lanes
   for (let task of tasks) {
     if (task.taskID === taskID) {
-      task.status = laneStatus;
-      // break;
+      task.status = laneStatus;     
     }    
   }
 
@@ -235,9 +223,6 @@ $(document).ready(function () {
   $(".submit").on("click", function () {
     taskFormEl.modal("hide");
   });
-
-  // call handleDrop for a task
-  // taskFormEl.on("click", ".draggable", handleDrop);
 
   //  use event delegation to delete tasks dynamically
   taskDisplayEl.on("click", ".delete", handleDeleteTask);
