@@ -1,6 +1,6 @@
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem('tasks'));
-let nextId = JSON.parse(localStorage.getItem('nextId')); //not sure what this is for
+let nextId = JSON.parse(localStorage.getItem('nextId')); //not used
 
 // add modal input fields
 const titleEl = $('#task-title');
@@ -19,7 +19,7 @@ function generateTaskId() {
 // Todo: create a function to create a task card
 function createTaskCard(task) {
   const taskCard = $('<div>');
-  taskCard.addClass('card task-card draggable my-3')
+  taskCard.addClass("card task-card draggable my-3");
   taskCard.attr('data-task-id', task.taskID);
   const cardHeader = $('<div>').addClass('card-header h4').text(task.title);
   const cardBody = $('<div>').addClass('card-body');
@@ -38,9 +38,9 @@ function createTaskCard(task) {
     const taskDueDate = dayjs(task.dueDate, 'MM/DD/YYYY');
 
     /* If the task is due today, make the card yellow. If it's past due, make it red. */
-    if (formattedDate.isSame(taskDueDate)) {
+    if (formattedDate === taskDueDate) {
       taskCard.addClass('bg-warning text-white');
-    } else if (formattedDate.isAfer(taskDueDate)) {
+    } else if (formattedDate > taskDueDate) {
       taskCard.addClass('bg-danger text-white');
       cardDeleteBtn.addClass('border-light');
     }
@@ -101,24 +101,22 @@ function renderTaskList() {
     
   }
 
- 
-
   //make task cards draggable
-  $('.draggable').draggable({
-    opacity: 0.7,
-    zIndex: 100,
+  $('.draggable').draggable({ snap: ".card-body" });
+    // opacity: 0.7,
+    // zIndex: 100,
     
-    helper: function (e) {
+    // helper: function (e) {
    
-      const original = $(e.target).hasClass('ui-draggable')
-        ? $(e.target)
-        : $(e.target).closest('.ui-draggable');
+    //   const original = $(e.target).hasClass('ui-draggable')
+    //     ? $(e.target)
+    //     : $(e.target).closest('.ui-draggable');
    
-      return original.clone().css({
-        width: original.outerWidth(),
-      });
-    },
-  });
+    //   return original.clone().css({
+    //     width: original.outerWidth(),
+    //   });
+    // },
+  
 
 }
 
@@ -217,25 +215,30 @@ function handleDrop(event, ui) {
  field a date picker */
 $(document).ready(function () {
   renderTaskList();
-  
+
   // event listener to close modal dialog
-  $('.close').on('click', function () {
-    $('#formModal').modal('hide');
+  $(".close").on("click", function () {
+    taskFormEl.modal("hide");
   });
 
   // event listener to add task to lane
-  taskFormEl.on('submit', handleAddTask);
+  taskFormEl.on("click", ".submit", handleAddTask);
+
+  // event listener to close modal dialog after submission
+  $(".submit").on("click", function () {
+    taskFormEl.modal("hide");
+  });
 
   //  use event delegation to delete tasks dynamically
-  taskDisplayEl.on('click', '.delete', handleDeleteTask);
+  taskDisplayEl.on("click", ".delete", handleDeleteTask);
 
   // make lanes droppable
-  $('.lane').droppable({
-    accept: '.draggable',
+  $(".lane").droppable({
+    accept: ".draggable",
     drop: handleDrop,
   });
 
-  // make date field a dat picker
+  // make date field a date picker
   dueDateEl.datepicker({
     changeMonth: true,
     changeYear: true,
