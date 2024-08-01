@@ -191,21 +191,24 @@ function handleDeleteTask(event){
 
 /* Todo: create a function to handle dropping a task into a 
  new status lane */
-//  this should change the status key of the task
 function handleDrop(event, ui) {
   // retrieve tasks from local storage
   const tasks = readTasksFromStorage();
+  // let task;
   
   // get the taskID from the draggable element
-  const taskID = ui.draggable.data('-taskid');
+  let taskID = ui.draggable.data('taskid');
+  console.log(taskID); //returns undefined instead of task id
+  /* matches by class instead of unique key */
  
   // find the lane ID
   const laneStatus = event.target.id;
 
   // update task statuses based on lanes
   for (let task of tasks) {
-    if (task.id === taskID) {
+    if (task.taskID === taskID) {
       task.status = laneStatus;
+      // break;
     }    
   }
 
@@ -233,12 +236,15 @@ $(document).ready(function () {
     taskFormEl.modal("hide");
   });
 
+  // call handleDrop for a task
+  // taskFormEl.on("click", ".draggable", handleDrop);
+
   //  use event delegation to delete tasks dynamically
   taskDisplayEl.on("click", ".delete", handleDeleteTask);
 
   // make lanes droppable
   $(".ui-droppable").droppable({
-    accept: ".draggable",
+    accept: ".ui-draggable",
     drop: handleDrop,
   });
 
