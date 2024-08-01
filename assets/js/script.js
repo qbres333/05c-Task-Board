@@ -22,6 +22,38 @@ function createTaskCard(task) {
   const taskCard = $('<div>');
   taskCard.addClass('card task-card draggable my-3')
   taskCard.attr('data-task-id', task.id);
+  const cardHeader = $("<div>").addClass("card-header h4").text(task.titleEl);
+  const cardBody = $("<div>").addClass("card-body");
+  const cardDueDate = $("<p>").addClass("card-text").text(task.dueDateEl);
+  const cardDescription = $("<p>").addClass("card-text").text(task.descriptionEl);
+  const cardDeleteBtn = $("<button>")
+  cardDeleteBtn.addClass("btn btn-danger delete")
+  cardDeleteBtn.text("Delete")
+  cardDeleteBtn.attr("data-task-id", task.id);
+  cardDeleteBtn.on("click", handleDeleteTask);
+
+  /* Only apply styles if status 
+  is not 'done' */
+  if (task.status !== 'done') {
+    const now = dayjs();
+    const formattedDate = now.format('MM/DD/YYYY');
+    const taskDueDate = dayjs(task.dueDateEl, "MM/DD/YYYY");
+
+    /** If the task is due today, make the card yellow. If it's past due, make it red. */
+    if (formattedDate.isSame(taskDueDate)) {
+      taskCard.addClass('bg-warning text-white');
+    } else if (formattedDate.isAfer(taskDueDate)) {
+      taskCard.addClass('bg-danger text-white');
+      cardDeleteBtn.addClass('border-light');
+    }
+
+  }
+
+  // append fields to card and card body
+  taskCard.append(cardHeader, cardBody);
+  cardBody.append(cardDueDate, cardDescription, cardDeleteBtn);
+
+  return taskCard;
 
 }
 
